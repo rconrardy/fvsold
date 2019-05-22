@@ -10,8 +10,7 @@ class FoveatedVisionSystem:
         Parameters: *args (int): Camera Indices
         """
         self.signals = {"open": False}
-        self.indices = indices
-        self.devices = {index:CaptureDevice(index, self.signals) for index in self.indices}
+        self.devices = [CaptureDevice(index, self.signals) for index in indices]
 
     def open(self):
         """
@@ -19,7 +18,7 @@ class FoveatedVisionSystem:
         Parameters: none
         """
         self.signals["open"] = True
-        self.threads = [threading.Thread(target=device.capture) for device in self.devices.values()]
+        self.threads = [threading.Thread(target=device.capture) for device in self.devices]
         [thread.start() for thread in self.threads]
 
     def close(self):
@@ -28,6 +27,7 @@ class FoveatedVisionSystem:
         Parameters: none
         """
         self.signals["open"] = False
+        [device.cap.release for device in self.devices]
         [thread.join() for thread in self.threads]
 
 class CaptureDevice():
@@ -38,7 +38,7 @@ class CaptureDevice():
         """
         self.signals = signals
         self.index = index
-        self.device = cv2.VideoCapture(index)
+        self.cap = cv2.VideoCapture(index)
         self.visions = {key:None for key in config.visions.keys()}
 
     def capture(self):
@@ -63,8 +63,8 @@ class CaptureDevice():
         original frame into a square.
         Parameter: none
         """
-        ret, frame = self.device.read()
-        height, width, depth = frame.shape
+        ret, frame = self.cap.read()
+        height, width, channels = frame.shape
         diff = (width - height) // 2
         return frame[:,diff:(width-diff)]
 
@@ -99,7 +99,7 @@ class Vision():
         """
         self.frame["prev"] = self.frame["curr"]
         self.getBase(old_frame)
-        [getattr(self, "get" + job)() for job in self.jobs]
+        [getattr(self, "get" + job.lower().capitalize())() for job in self.jobs if job not in ["curr", "prev"]]
 
     def showVision(self):
         """
@@ -112,6 +112,20 @@ class Vision():
             cv2.resizeWindow(window_name, 600,600)
             cv2.imshow(window_name, self.frame[job.lower()])
 
+    def getGray(self):
+        """
+        Gets the gray version of the current frame
+        Parameter: None
+        """
+        self.frame["gray"] = cv2.cvtColor(self.frame["curr"], cv2.COLOR_BGR2GRAY)
+
+    def getEdge(self):
+        """
+        Gets the edges of the current frame
+        Parameter: None
+        """
+        self.frame["edge"] = cv2.Canny(self.frame["curr"], 100, 200)
+
     def getDiff(self):
         """
         Gets the difference between the previous and current frame
@@ -121,3 +135,13 @@ class Vision():
         curr_gray = cv2.cvtColor(self.frame["curr"], cv2.COLOR_BGR2GRAY)
         abs_diff = cv2.absdiff(prev_gray, curr_gray)
         self.frame["diff"] = cv2.threshold(abs_diff, 30, 255, cv2.THRESH_BINARY)[1]
+
+    def getLog(self):
+        new_size = (self.frame["curr"].shape[0]/2, self.frame["curr"].shape[1]/2)
+        print(self.frame["curr"].shape)
+        self.frame["log"] = cv2.logPolar(self.frame["curr"], new_size, 40, cv2.WARP_FILL_OUTLIERS)
+        print(self.frame["log"].shape)
+
+    def getLinear(self):
+        new_size = (self.frame["curr"].shape[0]/2, self.frame["curr"].shape[1]/2,)
+        self.frame["linear"] = cv2.linearPolar(self.frame["curr"], new_size, 40, cv2.WARP_FILL_OUTLIERS)

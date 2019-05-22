@@ -14,17 +14,17 @@ visions = {
     1: {
         "ratio": 1/1,
         "size": 124,
-        "jobs": ["Diff"]
+        "jobs": ["curr", "prev", "log", "linear"]
     },
     2: {
         "ratio": 1/2,
         "size": 124,
-        "jobs": ["Diff"]
+        "jobs": ["edge"]
     },
     3: {
         "ratio": 1/3,
         "size": 124,
-        "jobs": []
+        "jobs": ["gray"]
     },
     4: {
         "ratio": 1/4,
