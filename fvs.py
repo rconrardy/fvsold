@@ -137,11 +137,19 @@ class Vision():
         self.frame["diff"] = cv2.threshold(abs_diff, 30, 255, cv2.THRESH_BINARY)[1]
 
     def getLog(self):
+        """
+        Gets the log polar of the current frame
+        Parameter: None
+        """
         new_size = (self.frame["curr"].shape[0]/2, self.frame["curr"].shape[1]/2)
         print(self.frame["curr"].shape)
         self.frame["log"] = cv2.logPolar(self.frame["curr"], new_size, 40, cv2.WARP_FILL_OUTLIERS)
         print(self.frame["log"].shape)
 
     def getLinear(self):
+        """
+        Gets the linear polar of the current frame
+        Parameter: None
+        """
         new_size = (self.frame["curr"].shape[0]/2, self.frame["curr"].shape[1]/2,)
         self.frame["linear"] = cv2.linearPolar(self.frame["curr"], new_size, 40, cv2.WARP_FILL_OUTLIERS)
