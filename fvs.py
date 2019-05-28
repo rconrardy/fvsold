@@ -142,9 +142,7 @@ class Vision():
         Parameter: None
         """
         new_size = (self.frame["curr"].shape[0]/2, self.frame["curr"].shape[1]/2)
-        print(self.frame["curr"].shape)
         self.frame["log"] = cv2.logPolar(self.frame["curr"], new_size, 40, cv2.WARP_FILL_OUTLIERS)
-        print(self.frame["log"].shape)
 
     def getLinear(self):
         """
