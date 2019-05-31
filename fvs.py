@@ -1,4 +1,5 @@
 import threading
+import serial
 import config
 import math
 import cv2
@@ -11,6 +12,7 @@ class FoveatedVisionSystem:
         """
         self.signals = {"open": False}
         self.devices = [CaptureDevice(index, self.signals) for index in indices]
+        self.gimbals = [GimbalMount(self.signals)]
 
     def open(self):
         """
@@ -18,8 +20,10 @@ class FoveatedVisionSystem:
         Parameters: none
         """
         self.signals["open"] = True
-        self.threads = [threading.Thread(target=device.capture) for device in self.devices]
-        [thread.start() for thread in self.threads]
+        self.device_threads = [threading.Thread(target=device.capture) for device in self.devices]
+        self.gimbal_threads = [threading.Thread(target=gimbal.listen) for gimbal in self.gimbals]
+        [thread.start() for thread in self.device_threads]
+        [thread.start() for thread in self.gimbal_threads]
 
     def close(self):
         """
@@ -28,7 +32,8 @@ class FoveatedVisionSystem:
         """
         self.signals["open"] = False
         [device.cap.release for device in self.devices]
-        [thread.join() for thread in self.threads]
+        [thread.join() for thread in self.device_threads]
+        [thread.join() for thread in self.gimbal_threads]
 
 class CaptureDevice():
     def __init__(self, index, signals):
@@ -151,3 +156,19 @@ class Vision():
         """
         new_size = (self.frame["curr"].shape[0]/2, self.frame["curr"].shape[1]/2,)
         self.frame["linear"] = cv2.linearPolar(self.frame["curr"], new_size, 40, cv2.WARP_FILL_OUTLIERS)
+
+
+class GimbalMount():
+
+    def __init__(self, signals):
+        self.signals = signals
+        self.ser = serial.Serial('COM4', baudrate = 9600, timeout = 1)
+
+    def listen(self):
+        while(self.signals["open"]):
+            userInput = input('Enter input: ')
+            self.ser.write(str.encode(userInput))
+            arduinoData = self.ser.readline().decode('ascii')
+            print(arduinoData)
+            arduinoData = self.ser.readline().decode('ascii')
+            print(arduinoData)

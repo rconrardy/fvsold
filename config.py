@@ -1,19 +1,19 @@
 visions = {
-    # "mainfoveal": {
-    #     "ratio": 1/3,
-    #     "size": 100,
-    #     "jobs": ["curr", "prev", "log", "linear"]
-    # },
-    # "parafoveal": {
-    #     "ratio": 2/3,
-    #     "size": 100,
-    #     "jobs": ["curr"]
-    # },
-    # "peripheral": {
-    #     "ratio": 3/3,
-    #     "size": 100,
-    #     "jobs": ["gray"]
-    # }
+    "mainfoveal": {
+        "ratio": 1/3,
+        "size": 100,
+        "jobs": ["curr", "prev", "log", "linear"]
+    },
+    "parafoveal": {
+        "ratio": 2/3,
+        "size": 100,
+        "jobs": ["curr"]
+    },
+    "peripheral": {
+        "ratio": 3/3,
+        "size": 100,
+        "jobs": ["gray"]
+    }
 
     # "vision1": {
     #     "ratio": 1/1,
