@@ -1,12 +1,3 @@
-/* Sweep
- by BARRAGAN <http://barraganstudio.com>
- This example code is in the public domain.
-
- modified 8 Nov 2013
- by Scott Fitzgerald
- http://www.arduino.cc/en/Tutorial/Sweep
-*/
-
 #include <Servo.h>
 #include <string.h>
 
@@ -70,40 +61,3 @@ void loop() {
     }
   }
 }
-    
-    
-//    if (x_curr > x_prev) {
-//      for (x_prev; x_prev <= x_curr; x_prev += 1) {
-//         myservo_x.write(x_prev);
-//         delay(15);
-//      }
-//    }
-//    else {
-//      for (x_prev; x_prev >= x_curr; x_prev -= 1) {
-//         myservo_x.write(x_prev);
-//         delay(15);
-//      }
-//    }
-//    if (y_curr > y_prev) {
-//      for (y_prev; y_prev <= y_curr; y_prev += 1) {
-//         myservo_y.write(y_prev);
-//         delay(15);
-//      }
-//    }
-//    else {
-//      for (y_prev; y_prev >= y_curr; y_prev -= 1) {
-//         myservo_y.write(y_prev);
-//         delay(15);
-//      }
-//    }
-
-
-  
-//  for (pos = 0; pos <= 180; pos += 1) { // goes from 180 degrees to 0 degrees
-//    myservo_x.write(pos);
-//    delay(15);                       // waits 15ms for the servo to reach the position
-//  }
-//  for (pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
-//    myservo_x.write(pos);
-//    delay(15);                       // waits 15ms for the servo to reach the position
-//  }
